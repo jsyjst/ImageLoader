@@ -18,11 +18,7 @@ import java.io.IOException;
 
 
 public class DiskCache implements IImageCache {
-    private static String cacheDir ;
-
-    public DiskCache(Context context){
-        cacheDir = context.getExternalFilesDir("").getAbsolutePath();
-    }
+    private static String cacheDir  = MyApplication.getApplication().getExternalFilesDir("").getAbsolutePath();
 
     @Override
     public Bitmap get(String url) {
