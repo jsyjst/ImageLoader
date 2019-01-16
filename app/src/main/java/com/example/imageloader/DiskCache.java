@@ -3,6 +3,7 @@ package com.example.imageloader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,22 +20,25 @@ import java.io.IOException;
 
 
 public class DiskCache implements IImageCache {
+    private static final String TAG = "DiskCache";
     private static String cacheDir  = MyApplication.getApplication().getExternalFilesDir("image").getAbsolutePath();
 
     @Override
     public Bitmap get(String url) {
-        File file = new File(cacheDir);
-        if(!file.exists()){
-            file.mkdirs();
-        }
-        return BitmapFactory.decodeFile(cacheDir + url);
+        Log.d(TAG, "get: "+cacheDir+"/"+CommonUtils.splitUrl(url));
+        return BitmapFactory.decodeFile(cacheDir +"/"+ CommonUtils.splitUrl(url));
     }
 
     @Override
     public void put(String url, Bitmap bmp) {
         FileOutputStream fileOutputStream = null;
+        File file = new File(cacheDir);
+        if(!file.exists()){
+            file.mkdirs();
+        }
         try{
-            fileOutputStream = new FileOutputStream(cacheDir + url);
+            File imgFile = new File(cacheDir,CommonUtils.splitUrl(url));
+            fileOutputStream = new FileOutputStream(imgFile);
             bmp.compress(Bitmap.CompressFormat.PNG,100,fileOutputStream);
         } catch (FileNotFoundException e){
             e.printStackTrace();
